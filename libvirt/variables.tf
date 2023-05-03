@@ -157,3 +157,27 @@ variable "worker_disk_size" {
   description = "Disk size (in bytes)"
   default     = "25769803776"
 }
+
+variable "self_signed_cert" {
+  description = "used with self signed cert"
+  type = bool
+  default = false
+}
+
+variable "self_signed_path" {
+  description = "path of the RootCA"
+  type = string
+  default = "Forti.crt"
+}
+
+variable "k8s_pod_subnet" {
+  type = string
+  description = "Pod subnet for k8s"
+  default = "192.168.0.0/16"
+}
+
+variable "cni_plugin_version" {
+  type = string
+  description = "Version of the cni plugin"
+  default = "latest"
+}

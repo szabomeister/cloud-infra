@@ -159,6 +159,20 @@ resource "null_resource" "worker_provision_k8s_containerd" {
     destination = "/tmp/provision-k8s-node.sh"
   }
 
+  provisioner "file" {
+    source     = "Forti.crt"
+    destination = "/tmp/Forti.crt"
+  }
+ 
+  provisioner "remote-exec" {
+     inline = [
+       "sudo mkdir -p /usr/local/share/ca-certificates/local",
+       "sudo cp /tmp/Forti.crt /usr/local/share/ca-certificates/local/Forti.crt",
+       "sudo update-ca-certificates"
+     ]
+  }
+
+
   provisioner "remote-exec" {
   inline = [
     "chmod +x /tmp/provision-k8s-node.sh",

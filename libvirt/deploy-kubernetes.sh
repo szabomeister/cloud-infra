@@ -18,6 +18,10 @@ if [ $CNI_PLUGIN == "cilium" ]; then
     CILIUM_VERSION=$(curl -s https://api.github.com/repos/cilium/cilium/releases/latest | jq -r '.tag_name' | sed -e 's/^v//')
     CNI_INSTALL="helm repo add cilium https://helm.cilium.io/
     helm install cilium cilium/cilium --version ${CILIUM_VERSION} --namespace kube-system --set kubeProxyReplacement=disabled"
+elif [ $CNI_PLUGIN == "flannel" ]; then
+    CNI_INSTALL="kubectl apply -f https://github.com/flannel-io/flannel/releases/latest/download/kube-flannel.yml"
+elif [ $CNI_PLUGIN == "canal" ]; then
+    CNI_INSTALL="kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.24.0/manifests/canal.yaml"
 else
     CNI_INSTALL="kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml"
 fi
@@ -35,7 +39,7 @@ kind: ClusterConfiguration
 kubernetesVersion: ${KUBERNETES_VER}
 controlPlaneEndpoint: k8scp:6443
 networking:
-  podSubnet: 192.168.0.0/16
+  podSubnet: ${K8S_POD_SUBNET}
 EOF
 
 i=0

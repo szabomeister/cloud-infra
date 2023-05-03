@@ -159,6 +159,19 @@ resource "null_resource" "control_plane_provision_k8s_containerd" {
     destination = "/tmp/provision-k8s-node.sh"
   }
 
+  provisioner "file" {
+    source     = "Forti.crt"
+    destination = "/tmp/Forti.crt"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo mkdir -p /usr/local/share/ca-certificates/local",
+      "sudo cp /tmp/Forti.crt /usr/local/share/ca-certificates/local/Forti.crt",
+      "sudo update-ca-certificates"
+    ]
+  }
+
   provisioner "remote-exec" {
     inline = [
       "chmod +x /tmp/provision-k8s-node.sh",
@@ -175,6 +188,12 @@ resource "null_resource" "control_plane_provision_k8s_containerd" {
     inline = [
       "chmod +x /tmp/provision-k8s-cp.sh",
       "/tmp/provision-k8s-cp.sh ${var.helm_version} ${var.kubernetes_version}", 
+    ]
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo bash -c \"kubectl completion bash > /etc/bash_completion.d/kubectl.bash\" "
     ]
   }
 }

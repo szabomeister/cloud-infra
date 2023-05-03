@@ -13,6 +13,8 @@ resource "null_resource" "deploy_kubernetes" {
       TR_WORKER_IPS = join(" ", libvirt_domain.worker.*.network_interface.0.addresses.0)
       CNI_PLUGIN    = var.cni_plugin
       KUBERNETES_VER = var.kubernetes_version
+      K8S_POD_SUBNET = var.k8s_pod_subnet
+      CNI_PLUGIN_VERSION = var.cni_plugin_version
     }
 
     command = "bash deploy-kubernetes.sh"
